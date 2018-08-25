@@ -1,4 +1,4 @@
-package me.jtrenaud1s.assignment00;
+package me.jtrenaud1s.docgen;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.Document;

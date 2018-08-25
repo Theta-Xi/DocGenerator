@@ -1,4 +1,4 @@
-package me.jtrenaud1s.assignment00;
+package me.jtrenaud1s.docgen;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
