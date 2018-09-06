@@ -17,6 +17,7 @@ public class Main {
         ArrayList<File> outputImgs = new ArrayList<>();
 
         JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select the src folder in your project directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
@@ -25,6 +26,8 @@ public class Main {
         outputFile = chooser.getSelectedFile().getParentFile().getName() + ".docx";
 
         JFileChooser chooser1 = new JFileChooser();
+        chooser1.setCurrentDirectory(new File(System.getProperty("user.home")));
+
         chooser1.setDialogTitle("Select your output screenshot image(s): ");
         chooser1.addChoosableFileFilter(new FileNameExtensionFilter("PNG Files", "png"));
         chooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -36,6 +39,8 @@ public class Main {
         }
 
         JFileChooser chooser2 = new JFileChooser();
+        chooser2.setCurrentDirectory(new File(System.getProperty("user.home")));
+
         chooser2.setDialogTitle("Select your output directory: ");
         chooser2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser2.showDialog(null, "Select");

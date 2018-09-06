@@ -52,14 +52,33 @@ public class Project {
         for (File file : sourceFiles) {
             XWPFParagraph paragraph = document.createParagraph();
             XWPFRun run = paragraph.createRun();
-            run.setText(file.getName() + ":\n\n" + readFile(file) + "\n\n");
+            run.setText(file.getName() + ":");
+            run.addBreak();
+            run.setBold(true);
             document.setParagraph(paragraph, i);
             i++;
+
+            JavaFile jf = new JavaFile(file);
+            XWPFParagraph paragraph2 = document.createParagraph();
+            XWPFRun run2 = paragraph.createRun();
+            int j = 0;
+            for(String line : jf.getLines()) {
+                run2.setText(line, j);
+                run2.addBreak();
+                run2.setBold(false);
+                j++;
+            }
+
+            document.setParagraph(paragraph2, i);
+            i++;
+
         }
 
         XWPFParagraph paragraph = document.createParagraph();
         XWPFRun run = paragraph.createRun();
-        run.setText("Output: \n");
+        run.setBold(true);
+        run.setText("Output:");
+        run.addCarriageReturn();
         document.setParagraph(paragraph, i);
 
         System.out.println("Processing Output Screenshots...");
