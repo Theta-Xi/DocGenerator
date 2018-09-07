@@ -15,9 +15,17 @@ public class Main {
         String outputDir = "";
         String outputFile = "";
         ArrayList<File> outputImgs = new ArrayList<>();
+        Settings settings = null;
+        try {
+            settings = new Settings();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+
+        chooser.setCurrentDirectory(settings.getHomeDirectory());
         chooser.setDialogTitle("Select the src folder in your project directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
@@ -25,27 +33,19 @@ public class Main {
 
         outputFile = chooser.getSelectedFile().getParentFile().getName() + ".docx";
 
-        JFileChooser chooser1 = new JFileChooser();
-        chooser1.setCurrentDirectory(new File(System.getProperty("user.home")));
+        chooser.setCurrentDirectory(chooser.getSelectedFile());
 
-        chooser1.setDialogTitle("Select your output screenshot image(s): ");
-        chooser1.addChoosableFileFilter(new FileNameExtensionFilter("PNG Files", "png"));
-        chooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser1.setMultiSelectionEnabled(true);
-        chooser1.showDialog(null, "Select");
+        chooser.setDialogTitle("Select your output screenshot image(s): ");
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("PNG Files", "png"));
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setMultiSelectionEnabled(true);
+        chooser.showDialog(null, "Select");
 
-        for (File f : chooser1.getSelectedFiles()) {
+        for (File f : chooser.getSelectedFiles()) {
             outputImgs.add(f);
         }
 
-        JFileChooser chooser2 = new JFileChooser();
-        chooser2.setCurrentDirectory(new File(System.getProperty("user.home")));
-
-        chooser2.setDialogTitle("Select your output directory: ");
-        chooser2.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser2.showDialog(null, "Select");
-
-        outputDir = chooser2.getSelectedFile().getAbsolutePath();
+        outputDir = settings.getOutputDirectory().getAbsolutePath();
 
 
         Project project = new Project(srcDir, outputImgs, outputDir, outputFile);
