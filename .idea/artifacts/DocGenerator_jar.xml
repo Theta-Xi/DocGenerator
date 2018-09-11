@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DocGenerator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/DocGenerator_jar</output-path>
+    <root id="archive" name="DocGenerator.jar">
+      <element id="module-output" name="DocGenerator" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Libraries/poi-4.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Libraries/poi-ooxml-4.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Libraries/poi-ooxml-schemas-4.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Libraries/xmlbeans-3.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Desktop/Libraries/commons-compress-1.18.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -38,6 +38,10 @@ public class Main {
         chooser.setDialogTitle("Select the src folder in your project directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
+        if(chooser.getSelectedFile() == null) {
+            JOptionPane.showMessageDialog(chooser, "The program is closing, as you've cancelled the operation!");
+            return;
+        }
         srcDir = chooser.getSelectedFile().getAbsolutePath();
 
         outputFile = chooser.getSelectedFile().getParentFile().getName() + ".docx";
@@ -49,6 +53,10 @@ public class Main {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setMultiSelectionEnabled(true);
         chooser.showDialog(null, "Select");
+        if(chooser.getSelectedFiles().length == 0) {
+            JOptionPane.showMessageDialog(chooser, "The program is closing, as you've cancelled the operation!");
+            return;
+        }
 
         for (File f : chooser.getSelectedFiles()) {
             outputImgs.add(f);
