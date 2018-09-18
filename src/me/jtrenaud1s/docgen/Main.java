@@ -26,6 +26,8 @@ public class Main {
         } catch (IOException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        outputDir = settings.getOutputDirectory().getAbsolutePath();
+
 
         JFrame frame = new JFrame("Docx Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +39,6 @@ public class Main {
         gbc.fill = 1;
         gbc.weightx = 1;
         JButton setting = new JButton("Change Settings");
-
         frame.add(setting, gbc);
         JButton generate = new JButton("Generate .docx");
         gbc.gridx = 1;
@@ -45,11 +46,17 @@ public class Main {
         gbc.fill = 1;
         gbc.weightx = 1;
         frame.add(generate, gbc);
+        JButton open = new JButton("Open Output Folder");
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.fill = 1;
+        gbc.weightx = 1;
+        frame.add(open, gbc);
         log = new JTextArea(15, 60);
         log.setAutoscrolls(true);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 3;
         frame.add(new JScrollPane(log), gbc);
         log.setEditable(false);
         frame.pack();
@@ -69,13 +76,33 @@ public class Main {
         generate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createDoc();
+                try {
+                    createDoc();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
+        open.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if (!settings.hasValues())
+                        settings.setDefaults();
+
+                    Desktop.getDesktop().open(new File(outputDir));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 
-    private static void createDoc() {
+    private static void createDoc() throws IOException {
+
+        if (!settings.hasValues())
+            settings.setDefaults();
         JFileChooser chooser = new JFileChooser();
 
         chooser.setCurrentDirectory(settings.getHomeDirectory());
@@ -88,7 +115,6 @@ public class Main {
         srcDir = getSrcDir(projectDir);
         outputFile = chooser.getSelectedFile().getName() + ".docx";
         chooser.setCurrentDirectory(chooser.getSelectedFile());
-        outputDir = settings.getOutputDirectory().getAbsolutePath();
 
         Project project = new Project(projectDir, srcDir, outputDir, outputFile);
 

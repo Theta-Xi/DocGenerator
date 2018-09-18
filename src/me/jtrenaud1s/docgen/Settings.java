@@ -27,25 +27,24 @@ public class Settings {
     }
 
     public void setDefaults() throws IOException {
+        Main.log("Please set your directories in settings");
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select your projects directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
-        if (chooser.getSelectedFile() == null)
-            return;
-        settings.setProperty("homedir", chooser.getSelectedFile().getAbsolutePath());
-        Main.log("Projects Directory set to " + chooser.getSelectedFile().getAbsolutePath());
-
+        if (chooser.getSelectedFile() != null) {
+            settings.setProperty("homedir", chooser.getSelectedFile().getAbsolutePath());
+            Main.log("Projects Directory set to " + chooser.getSelectedFile().getAbsolutePath());
+        }
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select your desired Document Output Directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
-        if (chooser.getSelectedFile() == null)
-            return;
-        settings.setProperty("outputdir", chooser.getSelectedFile().getAbsolutePath());
-        Main.log("Docx Output Directory set to " + chooser.getSelectedFile().getAbsolutePath());
-
+        if (chooser.getSelectedFile() != null) {
+            settings.setProperty("outputdir", chooser.getSelectedFile().getAbsolutePath());
+            Main.log("Docx Output Directory set to " + chooser.getSelectedFile().getAbsolutePath());
+        }
         settings.store(new FileOutputStream(settingsFile), "");
     }
 
@@ -55,5 +54,9 @@ public class Settings {
 
     public File getOutputDirectory() {
         return outputDirectory;
+    }
+
+    public boolean hasValues() {
+        return settings.containsKey("homedir") && settings.containsKey("outputdir");
     }
 }
