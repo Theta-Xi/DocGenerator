@@ -11,22 +11,21 @@ import java.io.IOException;
 
 public class Main {
 
-    private static String srcDir;
-    private static String outputDir;
-    private static String outputFile;
-    private static String projectDir;
-    private static Settings settings = null;
-    private static JTextArea log;
+    private File srcDir;
+    private File outputDir;
+    private File outputFile;
+    private File projectDir;
+    private Settings settings;
+    private JTextArea log;
 
-    public static void main(String[] args) {
-
+    public Main() {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            settings = new Settings();
+            settings = new Settings(this);
         } catch (IOException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        outputDir = settings.getOutputDirectory().getAbsolutePath();
+        outputDir = settings.getOutputDirectory();
 
 
         JFrame frame = new JFrame("Docx Generator");
@@ -65,11 +64,7 @@ public class Main {
         setting.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    settings.setDefaults();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                settings.showSettings();
             }
         });
 
@@ -91,7 +86,7 @@ public class Main {
                     if (!settings.hasValues())
                         settings.setDefaults();
 
-                    Desktop.getDesktop().open(new File(outputDir));
+                    Desktop.getDesktop().open(outputDir);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -99,7 +94,12 @@ public class Main {
         });
     }
 
-    private static void createDoc() throws IOException {
+    public static void main(String[] args) {
+        new Main();
+
+    }
+
+    private void createDoc() throws IOException {
 
         if (!settings.hasValues())
             settings.setDefaults();
@@ -111,12 +111,15 @@ public class Main {
         chooser.showDialog(null, "Select");
         if (chooser.getSelectedFile() == null)
             return;
-        projectDir = chooser.getSelectedFile().getAbsolutePath();
+        projectDir = chooser.getSelectedFile();
         srcDir = getSrcDir(projectDir);
-        outputFile = chooser.getSelectedFile().getName() + ".docx";
-        chooser.setCurrentDirectory(chooser.getSelectedFile());
+        if (srcDir == null) {
+            JOptionPane.showMessageDialog(chooser, "The selected folder is not a java project!");
+            return;
+        }
+        outputFile = new File(outputDir, chooser.getSelectedFile().getName() + ".docx");
 
-        Project project = new Project(projectDir, srcDir, outputDir, outputFile);
+        Project project = new Project(this, projectDir, srcDir, outputDir, outputFile);
 
         try {
             project.save();
@@ -127,9 +130,8 @@ public class Main {
         }
     }
 
-    private static String getSrcDir(String projectDir) {
-        File project = new File(projectDir);
-        for (File f : project.listFiles()) {
+    private File getSrcDir(File projectDir) {
+        for (File f : projectDir.listFiles()) {
             if (f.isDirectory()) {
                 if (f.getName().equalsIgnoreCase("src")) {
                     for (File f2 : f.listFiles()) {
@@ -139,7 +141,7 @@ public class Main {
                                     if (main.isDirectory()) {
                                         if (main.getName().equalsIgnoreCase("java")) {
                                             log("Project is NetBeans");
-                                            return main.getAbsolutePath();
+                                            return main;
                                         }
                                     }
                                 }
@@ -147,15 +149,15 @@ public class Main {
                         }
                     }
                     log("Project is IntelliJ IDEA");
-                    return f.getAbsolutePath();
+                    return f;
                 }
             }
         }
-        return "";
+        return null;
     }
 
-    public static void log(String log) {
+    public void log(String log) {
         System.out.println(log);
-        Main.log.setText(Main.log.getText() + log + "\n");
+        this.log.setText(this.log.getText() + log + "\n");
     }
 }

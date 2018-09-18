@@ -15,15 +15,17 @@ public class Project {
     private File sourceDirectory;
     private List<File> outputImages;
     private File outputDir;
-    private String fileName;
+    private File file;
     private File projectDirectory;
+    private Main application;
 
-    public Project(String project, String src, String outDir, String filename) {
-        projectDirectory = new File(project);
-        sourceDirectory = new File(src);
+    public Project(Main app, File project, File src, File outDir, File filename) {
+        projectDirectory = project;
+        sourceDirectory = src;
         outputImages = new ArrayList<>();
-        outputDir = new File(outDir);
-        fileName = filename;
+        outputDir = outDir;
+        file = filename;
+        application = app;
     }
 
     public File getProjectDirectory() {
@@ -42,23 +44,24 @@ public class Project {
         return outputDir;
     }
 
-    public String getFileName() {
-        return fileName;
+    public File getFile() {
+        return file;
     }
 
     public void save() throws IOException, InvalidFormatException {
         List<File> sourceFiles = getJavaFilesInDir(getSourceDirectory());
-        Main.log("Processing " + sourceFiles.size() + " Java Source Files...");
+        application.log("Generating .docx for project " + projectDirectory.getName());
+        application.log("Processing " + sourceFiles.size() + " Java Source Files...");
 
         outputImages = getImageFilesInDir(getProjectDirectory());
-        File outputFile = new File(getOutputDir(), getFileName());
+        File outputFile = getFile();
         FileOutputStream out = new FileOutputStream(outputFile);
         CustomXWPFDocument document = new CustomXWPFDocument();
 
         int i = 0;
         for (File file : sourceFiles) {
             String relative = sourceDirectory.toURI().relativize(file.toURI()).getPath();
-            Main.log("\t" + relative);
+            application.log("\t" + relative);
             XWPFParagraph paragraph = document.createParagraph();
             XWPFRun run = paragraph.createRun();
             run.setText(file.getName() + ":");
@@ -84,7 +87,7 @@ public class Project {
 
         }
         if (outputImages.size() > 0) {
-            Main.log("Processing " + outputImages.size() + " Output Screenshots...");
+            application.log("Processing " + outputImages.size() + " Output Screenshots...");
 
 
             XWPFParagraph paragraph = document.createParagraph();
@@ -96,7 +99,7 @@ public class Project {
 
             for (File f : outputImages) {
                 String relative = projectDirectory.toURI().relativize(f.toURI()).getPath();
-                Main.log("\t" + relative);
+                application.log("\t" + relative);
 
                 BufferedImage bimg = ImageIO.read(f);
                 int width = bimg.getWidth();
@@ -110,11 +113,12 @@ public class Project {
                 document.createPicture(blipId, document.getNextPicNameNumber(pictureType), width, height);
             }
         } else {
-            Main.log("No output images to process...");
+            application.log("No output images to process...");
         }
         document.write(out);
         out.close();
-        Main.log("File saved to " + outputFile.getAbsolutePath());
+        application.log("File saved to " + outputFile.getAbsolutePath());
+        application.log("");
     }
 
 
