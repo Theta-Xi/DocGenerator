@@ -16,14 +16,19 @@ public class Project {
     private List<File> outputImages;
     private File outputDir;
     private String fileName;
+    private File projectDirectory;
 
-    public Project(String src, List<File> imgs, String outDir, String filename) {
+    public Project(String project, String src, String outDir, String filename) {
+        projectDirectory = new File(project);
         sourceDirectory = new File(src);
-        outputImages = imgs;
+        outputImages = new ArrayList<>();
         outputDir = new File(outDir);
         fileName = filename;
     }
 
+    public File getProjectDirectory() {
+        return projectDirectory;
+    }
 
     public File getSourceDirectory() {
         return sourceDirectory;
@@ -44,7 +49,8 @@ public class Project {
     public void save() throws IOException, InvalidFormatException {
         System.out.println("Processing Java Source Files...");
 
-        List<File> sourceFiles = getFilesInDir(getSourceDirectory());
+        List<File> sourceFiles = getJavaFilesInDir(getSourceDirectory());
+        outputImages = getImageFilesInDir(getProjectDirectory());
         FileOutputStream out = new FileOutputStream(new File(getOutputDir(), getFileName()));
         CustomXWPFDocument document = new CustomXWPFDocument();
 
@@ -73,29 +79,37 @@ public class Project {
             i++;
 
         }
+        if (outputImages.size() > 0) {
+            System.out.println("Processing Output Screenshots...");
 
-        XWPFParagraph paragraph = document.createParagraph();
-        XWPFRun run = paragraph.createRun();
-        run.setBold(true);
-        run.setText("Output:");
-        run.addCarriageReturn();
-        document.setParagraph(paragraph, i);
+            XWPFParagraph paragraph = document.createParagraph();
+            XWPFRun run = paragraph.createRun();
+            run.setBold(true);
+            run.setText("Output:");
+            run.addCarriageReturn();
+            document.setParagraph(paragraph, i);
 
-        System.out.println("Processing Output Screenshots...");
-
-        for (File f : outputImages) {
-            BufferedImage bimg = ImageIO.read(f);
-            int width = bimg.getWidth();
-            int height = bimg.getHeight();
-            String blipId = document.addPictureData(new FileInputStream(f), Document.PICTURE_TYPE_PNG);
-            document.createPicture(blipId, document.getNextPicNameNumber(Document.PICTURE_TYPE_PNG), width, height);
+            for (File f : outputImages) {
+                BufferedImage bimg = ImageIO.read(f);
+                int width = bimg.getWidth();
+                int height = bimg.getHeight();
+                int pictureType = 0;
+                if (isJPG(f))
+                    pictureType = Document.PICTURE_TYPE_JPEG;
+                else if (isPNG(f))
+                    pictureType = Document.PICTURE_TYPE_PNG;
+                String blipId = document.addPictureData(new FileInputStream(f), pictureType);
+                document.createPicture(blipId, document.getNextPicNameNumber(pictureType), width, height);
+            }
+        } else {
+            System.out.println("No output images to process...");
         }
         document.write(out);
         out.close();
     }
 
 
-    private List<File> getFilesInDir(File dir) {
+    private List<File> getJavaFilesInDir(File dir) {
         List<File> sourceFiles = new ArrayList<>();
 
         for (File f : dir.listFiles()) {
@@ -103,7 +117,20 @@ public class Project {
                 sourceFiles.add(f);
             }
             if (f.isDirectory())
-                sourceFiles.addAll(getFilesInDir(f));
+                sourceFiles.addAll(getJavaFilesInDir(f));
+        }
+        return sourceFiles;
+    }
+
+    private List<File> getImageFilesInDir(File dir) {
+        List<File> sourceFiles = new ArrayList<>();
+
+        for (File f : dir.listFiles()) {
+            if (isImage(f)) {
+                sourceFiles.add(f);
+            }
+            if (f.isDirectory())
+                sourceFiles.addAll(getImageFilesInDir(f));
         }
         return sourceFiles;
     }
@@ -130,5 +157,17 @@ public class Project {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private boolean isImage(File f) {
+        return f.getName().endsWith(".png") || f.getName().endsWith(".PNG") || f.getName().endsWith("jpg") || f.getName().endsWith("JPG") || f.getName().endsWith("jpeg") || f.getName().endsWith("JPEG");
+    }
+
+    private boolean isPNG(File f) {
+        return f.getName().endsWith(".png") || f.getName().endsWith(".PNG");
+    }
+
+    private boolean isJPG(File f) {
+        return f.getName().endsWith("jpg") || f.getName().endsWith("JPG") || f.getName().endsWith("jpeg") || f.getName().endsWith("JPEG");
     }
 }

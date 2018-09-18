@@ -3,7 +3,6 @@ package me.jtrenaud1s.docgen;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ public class Main {
         String srcDir = "";
         String outputDir = "";
         String outputFile = "";
+        String projectDir = "";
         ArrayList<File> outputImgs = new ArrayList<>();
         Settings settings = null;
         try {
@@ -35,20 +35,15 @@ public class Main {
         JFileChooser chooser = new JFileChooser();
 
         chooser.setCurrentDirectory(settings.getHomeDirectory());
-        chooser.setDialogTitle("Select the src folder in your project directory: ");
+        chooser.setDialogTitle("Select the your project's root directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
-        srcDir = chooser.getSelectedFile().getAbsolutePath();
+        projectDir = chooser.getSelectedFile().getAbsolutePath();
+        srcDir = getSrcDir(projectDir);
 
-        outputFile = chooser.getSelectedFile().getParentFile().getName() + ".docx";
+        outputFile = chooser.getSelectedFile().getName() + ".docx";
 
         chooser.setCurrentDirectory(chooser.getSelectedFile());
-
-        chooser.setDialogTitle("Select your output screenshot image(s): ");
-        chooser.addChoosableFileFilter(new FileNameExtensionFilter("PNG Files", "png"));
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setMultiSelectionEnabled(true);
-        chooser.showDialog(null, "Select");
 
         for (File f : chooser.getSelectedFiles()) {
             outputImgs.add(f);
@@ -57,7 +52,7 @@ public class Main {
         outputDir = settings.getOutputDirectory().getAbsolutePath();
 
 
-        Project project = new Project(srcDir, outputImgs, outputDir, outputFile);
+        Project project = new Project(projectDir, srcDir, outputDir, outputFile);
 
         try {
             project.save();
@@ -66,5 +61,32 @@ public class Main {
         } catch (InvalidFormatException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String getSrcDir(String projectDir) {
+        File project = new File(projectDir);
+        for (File f : project.listFiles()) {
+            if (f.isDirectory()) {
+                if (f.getName().equalsIgnoreCase("src")) {
+                    for (File f2 : f.listFiles()) {
+                        if (f2.isDirectory()) {
+                            if (f2.getName().equalsIgnoreCase("main")) {
+                                for (File main : f2.listFiles()) {
+                                    if (main.isDirectory()) {
+                                        if (main.getName().equalsIgnoreCase("java")) {
+                                            System.out.println("Project is NetBeans");
+                                            return main.getAbsolutePath();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    System.out.println("Project is IntelliJ IDEA");
+                    return f.getAbsolutePath();
+                }
+            }
+        }
+        return "";
     }
 }
