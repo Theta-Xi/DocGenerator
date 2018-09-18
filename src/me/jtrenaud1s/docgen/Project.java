@@ -47,15 +47,17 @@ public class Project {
     }
 
     public void save() throws IOException, InvalidFormatException {
-        System.out.println("Processing Java Source Files...");
-
         List<File> sourceFiles = getJavaFilesInDir(getSourceDirectory());
+        System.out.println("Processing " + sourceFiles.size() + " Java Source Files...");
+
         outputImages = getImageFilesInDir(getProjectDirectory());
         FileOutputStream out = new FileOutputStream(new File(getOutputDir(), getFileName()));
         CustomXWPFDocument document = new CustomXWPFDocument();
 
         int i = 0;
         for (File file : sourceFiles) {
+            String relative = sourceDirectory.toURI().relativize(file.toURI()).getPath();
+            System.out.println("\t" + relative);
             XWPFParagraph paragraph = document.createParagraph();
             XWPFRun run = paragraph.createRun();
             run.setText(file.getName() + ":");
@@ -80,7 +82,8 @@ public class Project {
 
         }
         if (outputImages.size() > 0) {
-            System.out.println("Processing Output Screenshots...");
+            System.out.println("Processing " + outputImages.size() + " Output Screenshots...");
+
 
             XWPFParagraph paragraph = document.createParagraph();
             XWPFRun run = paragraph.createRun();
@@ -90,6 +93,9 @@ public class Project {
             document.setParagraph(paragraph, i);
 
             for (File f : outputImages) {
+                String relative = projectDirectory.toURI().relativize(f.toURI()).getPath();
+                System.out.println("\t" + relative);
+
                 BufferedImage bimg = ImageIO.read(f);
                 int width = bimg.getWidth();
                 int height = bimg.getHeight();

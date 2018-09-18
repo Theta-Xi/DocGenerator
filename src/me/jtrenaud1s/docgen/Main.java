@@ -5,29 +5,19 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Main {
 
     public static void main(String[] args) {
-        String srcDir = "";
-        String outputDir = "";
-        String outputFile = "";
-        String projectDir = "";
-        ArrayList<File> outputImgs = new ArrayList<>();
+        String srcDir;
+        String outputDir;
+        String outputFile;
+        String projectDir;
         Settings settings = null;
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
             settings = new Settings();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -40,17 +30,9 @@ public class Main {
         chooser.showDialog(null, "Select");
         projectDir = chooser.getSelectedFile().getAbsolutePath();
         srcDir = getSrcDir(projectDir);
-
         outputFile = chooser.getSelectedFile().getName() + ".docx";
-
         chooser.setCurrentDirectory(chooser.getSelectedFile());
-
-        for (File f : chooser.getSelectedFiles()) {
-            outputImgs.add(f);
-        }
-
         outputDir = settings.getOutputDirectory().getAbsolutePath();
-
 
         Project project = new Project(projectDir, srcDir, outputDir, outputFile);
 

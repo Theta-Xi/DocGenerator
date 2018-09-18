@@ -29,7 +29,6 @@ public class JavaFile {
 
             while ((line = reader.readLine()) != null) {
                 lines.add(trim(line));
-                System.out.println(trim(line));
             }
             reader.close();
         } catch (FileNotFoundException e) {
