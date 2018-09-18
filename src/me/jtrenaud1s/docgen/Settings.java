@@ -26,19 +26,25 @@ public class Settings {
         outputDirectory = new File(settings.getProperty("outputdir"));
     }
 
-    private void setDefaults() throws IOException {
+    public void setDefaults() throws IOException {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select your projects directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
+        if (chooser.getSelectedFile() == null)
+            return;
         settings.setProperty("homedir", chooser.getSelectedFile().getAbsolutePath());
+        Main.log("Projects Directory set to " + chooser.getSelectedFile().getAbsolutePath());
 
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select your desired Document Output Directory: ");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
+        if (chooser.getSelectedFile() == null)
+            return;
         settings.setProperty("outputdir", chooser.getSelectedFile().getAbsolutePath());
+        Main.log("Docx Output Directory set to " + chooser.getSelectedFile().getAbsolutePath());
 
         settings.store(new FileOutputStream(settingsFile), "");
     }

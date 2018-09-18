@@ -48,16 +48,17 @@ public class Project {
 
     public void save() throws IOException, InvalidFormatException {
         List<File> sourceFiles = getJavaFilesInDir(getSourceDirectory());
-        System.out.println("Processing " + sourceFiles.size() + " Java Source Files...");
+        Main.log("Processing " + sourceFiles.size() + " Java Source Files...");
 
         outputImages = getImageFilesInDir(getProjectDirectory());
-        FileOutputStream out = new FileOutputStream(new File(getOutputDir(), getFileName()));
+        File outputFile = new File(getOutputDir(), getFileName());
+        FileOutputStream out = new FileOutputStream(outputFile);
         CustomXWPFDocument document = new CustomXWPFDocument();
 
         int i = 0;
         for (File file : sourceFiles) {
             String relative = sourceDirectory.toURI().relativize(file.toURI()).getPath();
-            System.out.println("\t" + relative);
+            Main.log("\t" + relative);
             XWPFParagraph paragraph = document.createParagraph();
             XWPFRun run = paragraph.createRun();
             run.setText(file.getName() + ":");
@@ -82,7 +83,7 @@ public class Project {
 
         }
         if (outputImages.size() > 0) {
-            System.out.println("Processing " + outputImages.size() + " Output Screenshots...");
+            Main.log("Processing " + outputImages.size() + " Output Screenshots...");
 
 
             XWPFParagraph paragraph = document.createParagraph();
@@ -94,7 +95,7 @@ public class Project {
 
             for (File f : outputImages) {
                 String relative = projectDirectory.toURI().relativize(f.toURI()).getPath();
-                System.out.println("\t" + relative);
+                Main.log("\t" + relative);
 
                 BufferedImage bimg = ImageIO.read(f);
                 int width = bimg.getWidth();
@@ -108,10 +109,11 @@ public class Project {
                 document.createPicture(blipId, document.getNextPicNameNumber(pictureType), width, height);
             }
         } else {
-            System.out.println("No output images to process...");
+            Main.log("No output images to process...");
         }
         document.write(out);
         out.close();
+        Main.log("File saved to " + outputFile.getAbsolutePath());
     }
 
 
