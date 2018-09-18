@@ -28,6 +28,7 @@ public class Settings {
 
     public void setDefaults() throws IOException {
         Main.log("Please set your directories in settings");
+        JOptionPane.showMessageDialog(null, "Please set your directories in settings");
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select your projects directory: ");
@@ -39,7 +40,6 @@ public class Settings {
         }
         chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         chooser.setDialogTitle("Select your desired Document Output Directory: ");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.showDialog(null, "Select");
         if (chooser.getSelectedFile() != null) {
             settings.setProperty("outputdir", chooser.getSelectedFile().getAbsolutePath());
