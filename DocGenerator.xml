@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\Jordan\IdeaProjects\DocGenerator\out\artifacts\DocGenerator_jar\DocGenerator.jar</jar>
+  <outfile>C:\Users\Jordan\Desktop\DocGenerator.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\Jordan\Downloads\docx-win-icon.ico</icon>
+  <jre>
+    <path></path>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion>1.7.0_21</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
+  </jre>
+  <versionInfo>
+    <fileVersion>3.0.1.1</fileVersion>
+    <txtFileVersion>3.0.1.1</txtFileVersion>
+    <fileDescription>Microsoft Word docx Generator</fileDescription>
+    <copyright>Copyright 2018 Theta Xi</copyright>
+    <productVersion>3.0.1.1</productVersion>
+    <txtProductVersion>3.0.1.1</txtProductVersion>
+    <productName>DocGenerator</productName>
+    <companyName>Theta Xi</companyName>
+    <internalName>DocGenerator</internalName>
+    <originalFilename>DocGenerator.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>ENGLISH_US</language>
+  </versionInfo>
+</launch4jConfig>
