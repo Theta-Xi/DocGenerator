@@ -21,12 +21,9 @@ public class Main {
     public Main() {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            settings = new Settings(this);
-        } catch (IOException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
+        } catch (IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        outputDir = settings.getOutputDirectory();
-
 
         JFrame frame = new JFrame("Docx Generator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,6 +89,14 @@ public class Main {
                 }
             }
         });
+
+        try {
+            settings = new Settings(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        outputDir = settings.getOutputDirectory();
     }
 
     public static void main(String[] args) {
